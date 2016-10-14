@@ -17,7 +17,7 @@ class Model
   end
 
   def check_data_matches_columns()
-    query_result = QueryInterface.get_table_columns( self.class().table_name() )
+    query_result = QueryInterface.get_table_columns( table_name() )
     column_names = query_result.map { |result| result['column_name'] }
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
@@ -27,12 +27,16 @@ class Model
   end
 
   def save()
-    id = QueryInterface.insert( self.class().table_name(), @data )
+    id = QueryInterface.insert( table_name(), @data )
     @id = id
   end
 
   def update()
-    QueryInterface.update( self.class().table_name(), @data, @id )
+    QueryInterface.update( table_name(), @data, @id )
+  end
+
+  def delete()
+    QueryInterface.delete_with_id( table_name(), @id )
   end
 
   def method_missing(method_sym, *args)
@@ -53,6 +57,10 @@ class Model
     else
       super
     end
+  end
+
+  def table_name()
+    return self.class().table_name()
   end
 
   def self.delete_all()
