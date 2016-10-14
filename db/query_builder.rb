@@ -97,7 +97,7 @@ class QueryBuilder
     when 'Float'
       sql = "#{value}"
     when 'String'
-      sql = "'#{value}'"
+      sql = "'#{value.gsub("'", "''")}'"
     else
       raise(TypeError, "Un-supported data type class: #{value_class}.")
     end
