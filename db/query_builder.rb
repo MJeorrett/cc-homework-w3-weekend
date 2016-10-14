@@ -116,7 +116,7 @@ class QueryBuilder
     when 'String'
       sql = "'#{value}'"
     else
-      raise(TypeError, "Error: Un-supported data type #{value_class}.")
+      raise(TypeError, "Un-supported data type class: #{value_class}.")
     end
 
     return sql

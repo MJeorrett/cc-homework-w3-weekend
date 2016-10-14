@@ -4,14 +4,27 @@ require('pry-byebug')
 
 class Model
 
-  def initialize( data )
+  def initialize( data, table_name )
+
+    @table_name = table_name
+    @data = data
+
+    self.check_data_matches_columns()
 
     if data['id'] != nil
       @id = data['id']
       data.delete('id')
     end
+  end
 
-    @data = data
+  def check_data_matches_columns()
+    query_result = QueryBuilder.get_table_columns( @table_name )
+    column_names = query_result.map { |result| result['column_name'] }
+    @data.each_key do |key|
+      if !column_names.include?(key.to_s)
+        raise(TypeError, "Key '#{key}' not a column in table '#{@table_name}'.")
+      end
+    end
   end
 
   def update_data( column, new_value=nil )
