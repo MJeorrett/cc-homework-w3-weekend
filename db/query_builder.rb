@@ -2,6 +2,23 @@ require_relative('query_runner')
 
 class QueryBuilder
 
+  def self.all_records( table_name )
+    sql = self.all_records_sql( table_name )
+    return QueryRunner.run( sql )
+  end
+
+  def self.all_where( table_name, conditions_hash )
+    sql = self.all_where_sql( table_name, conditions_hash )
+    return QueryRunner.run( sql )
+  end
+
+  def self.insert( table_name, values_hash )
+    sql = self.insert_sql( table_name, values_hash )
+    return QueryRunner.run( sql ).first()['id']
+  end
+
+  private
+
   def self.all_records_sql(table_name)
     return "SELECT * FROM #{table_name}"
   end
@@ -34,7 +51,7 @@ class QueryBuilder
     columns_sql = columns_array.join(", ")
     values_sql = values_array.join(", ")
 
-    return "INSERT INTO #{table_name}(#{columns_sql}) VALUES (#{values_sql})"
+    return "INSERT INTO #{table_name}(#{columns_sql}) VALUES (#{values_sql}) RETURNING id"
   end
 
   def self.value_to_sql( value )

@@ -28,7 +28,7 @@ class QueryBuilderTest < MiniTest::Test
   end
 
   def test_insert_sql()
-    expected = "INSERT INTO customers(first_name, last_name, funds) VALUES ('Matthew', 'Jeorrett', 14.99)"
+    expected = "INSERT INTO customers(first_name, last_name, funds) VALUES ('Matthew', 'Jeorrett', 14.99) RETURNING id"
     data = {
       first_name: "Matthew",
       last_name: "Jeorrett",
