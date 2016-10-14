@@ -24,6 +24,7 @@ customer_settings = {
     precision: 2
   }
 }
+
 customer_generator = ModelGenerator.new( Customer, customer_settings )
 customers = []
 

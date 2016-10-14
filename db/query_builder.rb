@@ -4,43 +4,6 @@ class QueryBuilder
 
   DB_NAME = 'cinema'
 
-  def self.all_records( table_name )
-    sql = self.all_records_sql( table_name )
-    return QueryRunner.run( sql )
-  end
-
-  def self.all_where( table_name, conditions_hash )
-    sql = self.all_where_sql( table_name, conditions_hash )
-    return QueryRunner.run( sql )
-  end
-
-  def self.insert( table_name, values_hash )
-    sql = self.insert_sql( table_name, values_hash )
-    return QueryRunner.run( sql ).first()['id']
-  end
-
-  def self.update( table_name, values_hash, id )
-    sql = self.update_sql( table_name, values_hash, id)
-    return QueryRunner.run( sql )
-  end
-
-  def self.delete_all( table_name )
-    sql = self.delete_all_sql( table_name )
-    return QueryRunner.run( sql )
-  end
-
-  def self.delete_with_id( table_name, id )
-    sql = self.delete_with_id_sql( table_name, id )
-    return QueryRunner.run( sql )
-  end
-
-  def self.get_table_columns( table_name )
-    sql = self.get_table_columns_sql( table_name )
-    return QueryRunner.run( sql )
-  end
-
-  private
-
   def self.all_records_sql(table_name)
     return "SELECT * FROM #{table_name}"
   end

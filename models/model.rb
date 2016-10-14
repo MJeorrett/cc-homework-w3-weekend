@@ -1,4 +1,4 @@
-require_relative('../db/query_builder')
+require_relative('../db/query_interface')
 
 require('pry-byebug')
 
@@ -18,7 +18,7 @@ class Model
   end
 
   def check_data_matches_columns()
-    query_result = QueryBuilder.get_table_columns( @table_name )
+    query_result = QueryInterface.get_table_columns( @table_name )
     column_names = query_result.map { |result| result['column_name'] }
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
@@ -28,12 +28,12 @@ class Model
   end
 
   def save()
-    id = QueryBuilder.insert( @table_name, @data )
+    id = QueryInterface.insert( @table_name, @data )
     @id = id
   end
 
   def update()
-    QueryBuilder.update( @table_name, @data, @id )
+    QueryInterface.update( @table_name, @data, @id )
   end
 
   def method_missing(method_sym, *args)
