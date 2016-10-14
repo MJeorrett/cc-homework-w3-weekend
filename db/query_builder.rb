@@ -24,6 +24,16 @@ class QueryBuilder
     return QueryRunner.run( sql )
   end
 
+  def self.delete_all( table_name )
+    sql = self.delete_all_sql( table_name )
+    return QueryRunner.run( sql )
+  end
+
+  def self.delete_with_id( table_name, id )
+    sql = self.delete_with_id_sql( table_name, id )
+    return QueryRunner.run( sql )
+  end
+
   def self.get_table_columns( table_name )
     sql = self.get_table_columns_sql( table_name )
     return QueryRunner.run( sql )
@@ -82,6 +92,24 @@ class QueryBuilder
     return "UPDATE #{table_name} SET #{assignments_sql} #{where_clause}"
   end
 
+  def self.delete_all_sql( table_name )
+    return "DELETE FROM #{table_name}"
+  end
+
+  def self.delete_with_id_sql( table_name, id )
+    delete_statement = self.delete_all_sql( table_name )
+    where_clause = self.where_clause(id: id)
+    return "#{delete_statement} #{where_clause}"
+  end
+
+  def self.get_table_columns_sql( table_name )
+    columns_table_name = "#{DB_NAME}.information_schema.columns"
+    select_statement = self.all_records_sql(columns_table_name)
+    condition = { table_name: table_name }
+    where_clause = self.where_clause( condition )
+    return "#{select_statement} #{where_clause}"
+  end
+
   def self.get_columns_and_values_sql( values_hash )
     columns_array = []
     values_array = []
@@ -98,21 +126,13 @@ class QueryBuilder
     }
   end
 
-  def self.get_table_columns_sql( table_name )
-    columns_table_name = "#{DB_NAME}.information_schema.columns"
-    select_statement = self.all_records_sql(columns_table_name)
-    condition = { table_name: table_name }
-    where_clause = self.where_clause( condition )
-    return "#{select_statement} #{where_clause}"
-  end
-
   def self.value_to_sql( value )
     value_class = value.class().to_s()
     case value_class
     when 'Fixnum'
-      sql = value
+      sql = "#{value}"
     when 'Float'
-      sql = value
+      sql = "#{value}"
     when 'String'
       sql = "'#{value}'"
     else

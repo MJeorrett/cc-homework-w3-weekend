@@ -49,10 +49,34 @@ class QueryBuilderTest < MiniTest::Test
     assert_equal(expected, actual)
   end
 
+  def test_delete_all_sql()
+    expected = "DELETE FROM customers"
+    actual = QueryBuilder.delete_all_sql("customers")
+    assert_equal(expected, actual)
+  end
+
+  def test_delete_with_id_sql()
+    expected = "DELETE FROM customers WHERE id = 4"
+    actual = QueryBuilder.delete_with_id_sql("customers", 4)
+    assert_equal(expected, actual)
+  end
+
   def test_get_table_columns_sql()
     expected = "SELECT * FROM cinema.information_schema.columns WHERE table_name = 'customers'"
     actual = QueryBuilder.get_table_columns_sql( 'customers' )
     assert_equal(expected, actual)
+  end
+
+  def test_value_to_sql__string()
+    assert_equal("'Matthew'", QueryBuilder.value_to_sql("Matthew"))
+  end
+
+  def test_value_to_sql__fixnum()
+    assert_equal("14", QueryBuilder.value_to_sql(14))
+  end
+
+  def test_value_to_sql__float()
+    assert_equal("14.33", QueryBuilder.value_to_sql(14.33))
   end
 
 end
