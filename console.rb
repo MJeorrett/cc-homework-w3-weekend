@@ -6,6 +6,8 @@ require_relative('models/model_generator/model_generator')
 require('pry-byebug')
 
 # CUSTOMERS
+Customer.delete_all()
+
 customer_settings = {
   first_name: {
     type: 'file',

@@ -4,9 +4,8 @@ require('pry-byebug')
 
 class Model
 
-  def initialize( data, table_name )
+  def initialize( data )
 
-    @table_name = table_name
     @data = data
 
     self.check_data_matches_columns()
@@ -18,22 +17,22 @@ class Model
   end
 
   def check_data_matches_columns()
-    query_result = QueryInterface.get_table_columns( @table_name )
+    query_result = QueryInterface.get_table_columns( self.class().table_name() )
     column_names = query_result.map { |result| result['column_name'] }
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
-        raise(TypeError, "Key '#{key}' not a column in table '#{@table_name}'.")
+        raise(TypeError, "Key '#{key}' not a column in table '#{self.table_name()}'.")
       end
     end
   end
 
   def save()
-    id = QueryInterface.insert( @table_name, @data )
+    id = QueryInterface.insert( self.class().table_name(), @data )
     @id = id
   end
 
   def update()
-    QueryInterface.update( @table_name, @data, @id )
+    QueryInterface.update( self.class().table_name(), @data, @id )
   end
 
   def method_missing(method_sym, *args)
@@ -54,6 +53,14 @@ class Model
     else
       super
     end
+  end
+
+  def self.delete_all()
+    QueryInterface.delete_all( self.table_name() )
+  end
+
+  def self.table_name()
+    raise "Error: 'self.table_name' must be implemented in sub-classes of Model."
   end
 
 end
