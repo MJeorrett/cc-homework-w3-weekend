@@ -23,6 +23,9 @@ class ModelGenerator
       when 'random_decimal'
         settings[:generator] = RandGenerator.new(:decimal, settings[:min], settings[:max], settings[:precision])
 
+      when 'array'
+        settings[:generator] = settings[:data]
+
       else
         raise(TypeError, "Un-supported source '#{type}'")
       end
@@ -34,7 +37,17 @@ class ModelGenerator
     parameters = {}
 
     for parameter, settings in @settings
-      parameters[parameter] = settings[:generator].pop()
+
+      if settings[:type] == 'array' && settings[:randomise]
+        settings[:generator].shuffle!
+      end
+
+      value = settings[:generator].shift()
+      parameters[parameter] = value
+
+      if settings[:duplicates]
+        settings[:generator].push(value)
+      end
     end
 
     return @model_class.send(:new, parameters)

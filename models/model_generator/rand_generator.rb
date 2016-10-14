@@ -10,7 +10,7 @@ class RandGenerator
     @delta = max - min
   end
 
-  def pop()
+  def shift()
     next_number = (rand() * @delta) + @min
 
     case @type
