@@ -8,16 +8,18 @@ require('pry-byebug')
 # CUSTOMERS
 Customer.delete_all()
 
-customer_settings = {
+customer_generator_settings = {
   first_name: {
     type: 'file',
     path: "data/first_names_male.txt",
-    randomise: true
+    randomise: true,
+    duplicates: false
   },
   last_name: {
     type: 'file',
     path: "data/last_names.txt",
-    randomise: true
+    randomise: true,
+    duplicates: false
   },
   funds: {
     type: 'random_decimal',
@@ -27,7 +29,7 @@ customer_settings = {
   }
 }
 
-customer_generator = ModelGenerator.new( Customer, customer_settings )
+customer_generator = ModelGenerator.new( Customer, customer_generator_settings )
 customers = []
 
 30.times do
@@ -37,6 +39,30 @@ customers = []
 end
 
 # FILMS
+
+film_generator_settings = {
+  title: {
+    type: 'file',
+    path: 'data/film_names.txt',
+    randomise: true,
+    duplicates: false
+  },
+  price: {
+    type: 'array',
+    data: [7.50, 9.50, 12.00],
+    randomise: true,
+    duplicates: true
+  }
+}
+
+film_generator = ModelGenerator.new( Film, film_generator_settings)
+films = []
+
+20.times do
+  film = film_generator.generate_model()
+  film.save()
+  films.push(film)
+end
 
 
 # TICKETS
