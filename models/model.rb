@@ -27,13 +27,6 @@ class Model
     end
   end
 
-  def update_data( column, new_value=nil )
-    if new_value != nil
-      @data[column] = new_value
-    end
-    return @data[column]
-  end
-
   def save()
     id = QueryBuilder.insert( @table_name, @data )
     @id = id
