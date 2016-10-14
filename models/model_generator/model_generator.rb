@@ -16,7 +16,9 @@ class ModelGenerator
 
       case type
       when 'file'
-        settings[:generator] = ModelGenerator.array_from_file( settings[:path] )
+        data_array = ModelGenerator.array_from_file( settings[:path] )
+        data_array.shuffle! if settings[:randomise]
+        settings[:generator] = data_array
 
       when 'random_decimal'
         settings[:generator] = RandGenerator.new(:decimal, settings[:min], settings[:max], settings[:precision])

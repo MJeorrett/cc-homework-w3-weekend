@@ -9,11 +9,13 @@ require('pry-byebug')
 customer_settings = {
   first_name: {
     type: 'file',
-    path: "data/first_names_male.txt"
+    path: "data/first_names_male.txt",
+    randomise: true
   },
   last_name: {
     type: 'file',
-    path: "data/last_names.txt"
+    path: "data/last_names.txt",
+    randomise: true
   },
   funds: {
     type: 'random_decimal',
@@ -23,7 +25,13 @@ customer_settings = {
   }
 }
 customer_generator = ModelGenerator.new( Customer, customer_settings )
-customer_generator.generate_model()
+customers = []
+
+30.times do
+  customer = customer_generator.generate_model()
+  customer.save()
+  customers.push(customer)
+end
 
 # FILMS
 
