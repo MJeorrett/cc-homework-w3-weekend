@@ -1,10 +1,12 @@
+require_relative('query_runner')
+
 class QueryBuilder
 
-  def self.all_records(table_name)
+  def self.all_records_sql(table_name)
     return "SELECT * FROM #{table_name}"
   end
 
-  def self.all_where(table_name, conditions_hash)
+  def self.all_where_sql(table_name, conditions_hash)
     conditions_array = []
 
     for column, value in conditions_hash
@@ -14,12 +16,12 @@ class QueryBuilder
     end
 
     condition_statement = conditions_array.join(" AND ")
-    select_statement = self.all_records(table_name)
+    select_statement = self.all_records_sql(table_name)
 
     return "#{select_statement} WHERE #{condition_statement}"
   end
 
-  def self.insert( table_name, values_hash )
+  def self.insert_sql( table_name, values_hash )
     columns_array = []
     values_array = []
 
