@@ -27,4 +27,15 @@ class QueryBuilderTest < MiniTest::Test
     assert_equal(expected, actual)
   end
 
+  def test_insert()
+    expected = "INSERT INTO customers(first_name, last_name, funds) VALUES ('Matthew', 'Jeorrett', 14.99)"
+    data = {
+      first_name: "Matthew",
+      last_name: "Jeorrett",
+      funds: 14.99
+    }
+    actual = QueryBuilder.insert("customers", data)
+    assert_equal(expected, actual)
+  end
+
 end

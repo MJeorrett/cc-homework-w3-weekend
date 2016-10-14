@@ -19,10 +19,28 @@ class QueryBuilder
     return "#{select_statement} WHERE #{condition_statement}"
   end
 
+  def self.insert( table_name, values_hash )
+    columns_array = []
+    values_array = []
+
+    for column, value in values_hash
+      columns_array.push(column)
+      value_sql = self.value_to_sql( value )
+      values_array.push( value_sql )
+    end
+
+    columns_sql = columns_array.join(", ")
+    values_sql = values_array.join(", ")
+
+    return "INSERT INTO #{table_name}(#{columns_sql}) VALUES (#{values_sql})"
+  end
+
   def self.value_to_sql( value )
     value_class = value.class().to_s()
     case value_class
     when 'Fixnum'
+      sql = value
+    when 'Float'
       sql = value
     when 'String'
       sql = "'#{value}'"
