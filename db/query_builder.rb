@@ -2,6 +2,8 @@ require_relative('query_runner')
 
 class QueryBuilder
 
+  DB_NAME = 'cinema'
+
   def self.all_records( table_name )
     sql = self.all_records_sql( table_name )
     return QueryRunner.run( sql )
@@ -19,6 +21,11 @@ class QueryBuilder
 
   def self.update( table_name, values_hash, id )
     sql = self.update_sql( table_name, values_hash, id)
+    return QueryRunner.run( sql )
+  end
+
+  def self.get_table_columns( table_name )
+    sql = self.get_table_columns_sql( table_name )
     return QueryRunner.run( sql )
   end
 
@@ -89,6 +96,14 @@ class QueryBuilder
       columns_array: columns_array,
       values_array: values_array
     }
+  end
+
+  def self.get_table_columns_sql( table_name )
+    columns_table_name = "#{DB_NAME}.information_schema.columns"
+    select_statement = self.all_records_sql(columns_table_name)
+    condition = { table_name: table_name }
+    where_clause = self.where_clause( condition )
+    return "#{select_statement} #{where_clause}"
   end
 
   def self.value_to_sql( value )

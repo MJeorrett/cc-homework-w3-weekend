@@ -49,4 +49,10 @@ class QueryBuilderTest < MiniTest::Test
     assert_equal(expected, actual)
   end
 
+  def test_get_table_columns_sql()
+    expected = "SELECT * FROM cinema.information_schema.columns WHERE table_name = 'customers'"
+    actual = QueryBuilder.get_table_columns_sql( 'customers' )
+    assert_equal(expected, actual)
+  end
+
 end
