@@ -7,6 +7,7 @@ require('pry-byebug')
 # CUSTOMERS
 c_matthew_jeorrett = Customer.new(first_name: "Matthew", last_name: "Jeorrett", funds: 14.57)
 c_matthew_jeorrett.save()
+c_matthew_jeorrett.first_name = "John"
 
 # FILMS
 

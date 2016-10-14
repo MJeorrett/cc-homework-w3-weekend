@@ -38,4 +38,15 @@ class QueryBuilderTest < MiniTest::Test
     assert_equal(expected, actual)
   end
 
+  def test_update_sql()
+    expected = "UPDATE customers SET first_name = 'Matthew', last_name = 'Jeorrett', funds = 13.22 WHERE id = 4"
+    data = {
+      first_name: "Matthew",
+      last_name: "Jeorrett",
+      funds: 13.22
+    }
+    actual = QueryBuilder.update_sql("customers", data, 4)
+    assert_equal(expected, actual)
+  end
+
 end
