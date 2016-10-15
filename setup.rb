@@ -10,25 +10,6 @@ Ticket.delete_all()
 Customer.delete_all()
 Film.delete_all()
 
-# SET UP RELATIONS
-Customer.add_many_to_many_join(
-  'films',
-  Film,
-  'customer_id',
-  'tickets',
-  'film_id',
-  'films'
-)
-
-Film.add_many_to_many_join(
-  'customers',
-  Customer,
-  'film_id',
-  'tickets',
-  'customer_id',
-  'customers'
-)
-
 # GENERATE CUSTOMERS
 customer_generator_settings = {
   first_name: {
