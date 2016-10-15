@@ -142,7 +142,7 @@ class Model
       other_table: other_table
     }
 
-    current_join = @@joins.find { |join| join.name == name }
+    current_join = @@joins.find { |join| join[:name] == name }
     @@joins.delete(current_join) if current_join != nil
     @@joins.push( join_data )
   end
