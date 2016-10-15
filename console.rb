@@ -5,11 +5,12 @@ require_relative('models/model_generator/model_generator')
 
 require('pry-byebug')
 
-# CUSTOMERS
+# DELETE EXISTING RECORDS
 Ticket.delete_all()
 Customer.delete_all()
 Film.delete_all()
 
+# SET UP RELATIONS
 Customer.add_many_to_many_join(
   'films',
   Film,
@@ -19,6 +20,7 @@ Customer.add_many_to_many_join(
   'films'
 )
 
+# GENERATE CUSTOMERS
 customer_generator_settings = {
   first_name: {
     type: 'file',
@@ -49,8 +51,7 @@ customers = []
   customers.push(customer)
 end
 
-# FILMS
-
+# GENERATE FILMS
 film_generator_settings = {
   title: {
     type: 'file',
@@ -76,11 +77,35 @@ films = []
 end
 
 
-# TICKETS
+# GENERATE TICKETS
+customer_ids = customers.map { |customer| customer.id }
+min_customer_id = customer_ids.min()
+max_customer_id = customer_ids.max()
 
-# make ticket gnerator!!!
+film_ids = films.map { |film| film.id }
+min_film_id = film_ids.min()
+max_film_id = film_ids.max()
 
-customers[0].films
+ticket_generator_settings = {
+  customer_id: {
+    type: 'random_integer',
+    min: min_customer_id,
+    max: max_customer_id
+  },
+  film_id: {
+    type: 'random_integer',
+    min: min_film_id,
+    max: max_film_id
+  }
+}
+
+ticket_generator = ModelGenerator.new( Ticket, ticket_generator_settings )
+tickets = []
+30.times do
+  ticket = ticket_generator.generate_model()
+  ticket.save()
+  tickets.push(ticket)
+end
 
 binding.pry
 nil
