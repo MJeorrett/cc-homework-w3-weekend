@@ -53,32 +53,28 @@ class Model
     if !many_to_many_data.empty?()
       response = get_many_to_many( many_to_many_data )
     else
-      response = get_column(method_sym, args)
+
+      if method_sym.to_s[-1] == '='
+        column = method_sym[0..-2].to_sym
+        assign = true
+      else
+        column = method_sym
+        assign = false
+      end
+
+      if @data.keys().include?(column)
+        if assign
+          response = set_column_value( column )
+        else
+          response = get_column_value( method_sym )
+        end
+      else
+        super
+      end
+      
     end
 
     return response
-  end
-
-  def get_column(method_sym, args)
-
-    if method_sym.to_s[-1] == '='
-      column = method_sym[0..-2].to_sym
-      assign = true
-    else
-      column = method_sym
-      assign = false
-    end
-
-    if @data.keys().include?(column)
-      if assign
-        response = set_column_value( column )
-      else
-        response = get_column_value( method_sym )
-      end
-    else
-      super
-    end
-
   end
 
   def get_column_value( column )
@@ -99,9 +95,9 @@ class Model
       join_data[:join_column],
       join_data[:join_table],
       join_data[:other_join_column],
-      join_data[:other_table])
+      join_data[:other_table]
     )
-    
+
     return join_data[:other_class].send( :data_to_objects, data )
   end
 
