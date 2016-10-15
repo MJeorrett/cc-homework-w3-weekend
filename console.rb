@@ -7,6 +7,7 @@ require('pry-byebug')
 
 # CUSTOMERS
 Customer.delete_all()
+Film.delete_all()
 
 customer_generator_settings = {
   first_name: {
@@ -37,6 +38,8 @@ customers = []
   customer.save()
   customers.push(customer)
 end
+
+Customer.all()
 
 # FILMS
 

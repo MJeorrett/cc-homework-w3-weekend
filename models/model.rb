@@ -19,11 +19,13 @@ class Model
   def check_data_matches_columns()
     query_result = QueryInterface.get_table_columns( table_name() )
     column_names = query_result.map { |result| result['column_name'] }
+
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
         raise(TypeError, "Key '#{key}' not a column in table '#{self.table_name()}'.")
       end
     end
+
   end
 
   def save()
@@ -63,8 +65,17 @@ class Model
     return self.class().table_name()
   end
 
+  def self.all()
+    data = QueryInterface.all_records( table_name() )
+    return self.data_to_objects( data )
+  end
+
   def self.delete_all()
     QueryInterface.delete_all( self.table_name() )
+  end
+
+  def self.data_to_objects( data )
+    return data.map { |record| self.new( record ) }
   end
 
   def self.table_name()
