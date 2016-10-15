@@ -7,6 +7,7 @@ class Model
   def initialize( data )
 
     @data = data
+    @joins = []
 
     self.check_data_matches_columns()
 
@@ -42,6 +43,23 @@ class Model
   end
 
   def method_missing(method_sym, *args)
+    
+    many_to_many_data = @joins.select do |join|
+      correct_type = join[:type] == 'many_to_many'
+      name_matches = join[:name] == method_sym.to_s
+    end
+
+    if !many_to_many_data.empty?()
+      response = get_many_to_many( many_to_many_data )
+    else
+      response = get_column(method_sym, args)
+    end
+
+    return response
+  end
+
+  def get_column(method_sym, args)
+
     if method_sym.to_s[-1] == '='
       column = method_sym[0..-2].to_sym
       assign = true
@@ -52,13 +70,29 @@ class Model
 
     if @data.keys().include?(column)
       if assign
-        @data[column] = args[0]
+        response = set_column_value( column )
+      else
+        response = get_column_value( method_sym )
       end
-
-      return @data[column]
     else
       super
     end
+
+  end
+
+  def get_column_value( column )
+
+    return @data[column]
+  end
+
+  def set_column_value( column, new_value )
+
+    @data[column] = args[0]
+    return get_column_value( column )
+  end
+
+  def get_many_to_many( data )
+
   end
 
   def table_name()
@@ -85,6 +119,19 @@ class Model
 
   def self.data_to_obejct( data )
     return self.data_to_objects( data ).first()
+  end
+
+  def self.add_many_to_many_join( name, other_class, join_column, join_table, other_join_column, other_table )
+    join_data = {
+      name: name,
+      other_class: other_class,
+      type: 'many_to_many',
+      join_column: join_column,
+      join_table: join_table,
+      other_join_column: other_join_column,
+      other_table: other_table
+    }
+    @joins.push( join_data )
   end
 
   def self.table_name()

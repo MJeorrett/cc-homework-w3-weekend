@@ -39,7 +39,7 @@ customers = []
   customers.push(customer)
 end
 
-Customer.all()
+customers.first.first_name
 
 # FILMS
 
