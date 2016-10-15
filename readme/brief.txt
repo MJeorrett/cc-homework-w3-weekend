@@ -31,11 +31,10 @@ Basic extensions:
 
 Buying tickets should decrease the funds of the customer by the price
 Check how many tickets were bought by a customer
-Che
+Check how many customers are going to watch a certain film
 
 ---
 
-ck how many customers are going to watch a certain film
 Advanced extensions:
 
 Add a new 'time' column for the tickets
