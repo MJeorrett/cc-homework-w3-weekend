@@ -70,12 +70,21 @@ class Model
     return self.data_to_objects( data )
   end
 
+  def self.find_by_id( id )
+    data = QueryInterface.find_by_id( self.table_name(), id )
+    return self.data_to_obejct( data )
+  end
+
   def self.delete_all()
     QueryInterface.delete_all( self.table_name() )
   end
 
   def self.data_to_objects( data )
     return data.map { |record| self.new( record ) }
+  end
+
+  def self.data_to_obejct( data )
+    return self.data_to_objects( data ).first()
   end
 
   def self.table_name()

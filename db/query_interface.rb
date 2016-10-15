@@ -37,4 +37,10 @@ class QueryInterface
     return QueryRunner.run( sql )
   end
 
+  def self.find_by_id( table_name, id )
+    conditions_hash = { id: id }
+    sql = QueryBuilder.all_where_sql( table_name, conditions_hash )
+    return QueryRunner.run( sql )
+  end
+
 end
