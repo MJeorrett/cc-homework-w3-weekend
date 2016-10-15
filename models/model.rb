@@ -42,8 +42,9 @@ class Model
     QueryInterface.delete_with_id( table_name(), @id )
   end
 
+# this method is overidden to dynamically create accessors for all columns and joins.
   def method_missing(method_sym, *args)
-    
+
     many_to_many_data = @joins.select do |join|
       correct_type = join[:type] == 'many_to_many'
       name_matches = join[:name] == method_sym.to_s
@@ -91,8 +92,17 @@ class Model
     return get_column_value( column )
   end
 
-  def get_many_to_many( data )
+  def get_many_to_many( join_data )
 
+    data = QueryInterface.many_to_many(
+      self.table_name(),
+      join_data[:join_column],
+      join_data[:join_table],
+      join_data[:other_join_column],
+      join_data[:other_table])
+    )
+    
+    return join_data[:other_class].send( :data_to_objects, data )
   end
 
   def table_name()
