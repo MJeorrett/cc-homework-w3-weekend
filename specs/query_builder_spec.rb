@@ -61,6 +61,12 @@ class QueryBuilderTest < MiniTest::Test
     assert_equal(expected, actual)
   end
 
+  def test_many_to_many_sql()
+    expected = "SELECT * FROM films INNER JOIN tickets ON films.id = tickets.film_id WHERE tickets.customer_id = customers.id"
+    actual = QueryBuilder.many_to_many_sql( 'customers', 'customer_id', 'tickets', 'film_id', 'films' )
+    assert_equal(expected, actual)
+  end
+
   def test_get_table_columns_sql()
     expected = "SELECT * FROM cinema.information_schema.columns WHERE table_name = 'customers'"
     actual = QueryBuilder.get_table_columns_sql( 'customers' )
