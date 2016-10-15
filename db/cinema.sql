@@ -1,6 +1,7 @@
 -- DROP VIEWS
 DROP VIEW IF EXISTS tickets_vw;
 DROP VIEW IF EXISTS customers_vw;
+DROP VIEW IF EXISTS films_vw;
 
 -- DROP TABLES
 DROP TABLE IF EXISTS tickets;
@@ -28,15 +29,19 @@ CREATE TABLE tickets (
 );
 
 -- CREATE VIEWS
-CREATE OR REPLACE VIEW customers_vw AS SELECT
+CREATE VIEW customers_vw AS SELECT
   id,
   concat(first_name, ' ', last_name) full_name,
   first_name,
   last_name
 FROM customers
-ORDER BY last_name ASC;
+ORDER BY full_name ASC;
 
-CREATE OR REPLACE VIEW tickets_vw AS SELECT
+CREATE VIEW films_vw AS SELECT *
+FROM films
+ORDER BY title ASC;
+
+CREATE VIEW tickets_vw AS SELECT
   t.id,
   customers_vw.full_name customer,
   f.title film
