@@ -32,8 +32,8 @@ class QueryInterface
     return QueryRunner.run( sql )
   end
 
-  def self.many_to_many( table_name, join_column, join_table, other_join_id, other_table )
-    sql = QueryBuilder.many_to_many_sql( table_name, join_column, join_table, other_join_id, other_table )
+  def self.many_to_many( table_name, join_column, join_table, other_join_column, other_table )
+    sql = QueryBuilder.many_to_many_sql( table_name, join_column, join_table, other_join_column, other_table )
     return QueryRunner.run( sql )
   end
 
