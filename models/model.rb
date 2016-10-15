@@ -4,10 +4,13 @@ require('pry-byebug')
 
 class Model
 
+  attr_reader :id
+
+  @@joins = []
+
   def initialize( data )
 
     @data = data
-    @joins = []
 
     self.check_data_matches_columns()
 
@@ -23,7 +26,7 @@ class Model
 
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
-        raise(TypeError, "Key '#{key}' not a column in table '#{self.table_name()}'.")
+        raise(TypeError, "Error in sub-class: #{self.class()}: Key '#{key}' not a column in table '#{self.table_name()}'.")
       end
     end
 
@@ -45,12 +48,12 @@ class Model
 # this method is overidden to dynamically create accessors for all columns and joins.
   def method_missing(method_sym, *args)
 
-    many_to_many_data = @joins.select do |join|
+    many_to_many_data = @@joins.find do |join|
       correct_type = join[:type] == 'many_to_many'
       name_matches = join[:name] == method_sym.to_s
     end
 
-    if !many_to_many_data.empty?()
+    if many_to_many_data != nil
       response = get_many_to_many( many_to_many_data )
     else
 
@@ -71,7 +74,7 @@ class Model
       else
         super
       end
-      
+
     end
 
     return response
@@ -89,9 +92,9 @@ class Model
   end
 
   def get_many_to_many( join_data )
-
+    
     data = QueryInterface.many_to_many(
-      self.table_name(),
+      @id,
       join_data[:join_column],
       join_data[:join_table],
       join_data[:other_join_column],
@@ -128,6 +131,7 @@ class Model
   end
 
   def self.add_many_to_many_join( name, other_class, join_column, join_table, other_join_column, other_table )
+
     join_data = {
       name: name,
       other_class: other_class,
@@ -137,11 +141,14 @@ class Model
       other_join_column: other_join_column,
       other_table: other_table
     }
-    @joins.push( join_data )
+
+    current_join = @@joins.find { |join| join.name == name }
+    @@joins.delete(current_join) if current_join != nil
+    @@joins.push( join_data )
   end
 
   def self.table_name()
-    raise "Error: 'self.table_name' must be implemented in sub-classes of Model."
+    raise "Error in sub-class #{self.class}:  'self.table_name' must be implemented in sub-classes of Model."
   end
 
 end

@@ -65,9 +65,9 @@ class QueryBuilder
     return "#{delete_statement} #{where_clause}"
   end
 
-  def self.many_to_many_sql( table_name, join_column, join_table, other_join_column, other_table )
+  def self.many_to_many_sql( id, join_column, join_table, other_join_column, other_table )
     select_statement = self.all_records_sql( other_table )
-    return "#{select_statement} INNER JOIN #{join_table} ON #{other_table}.id = #{join_table}.#{other_join_column} WHERE #{join_table}.#{join_column} = #{table_name}.id"
+    return "SELECT #{other_table}.* FROM #{other_table} INNER JOIN #{join_table} ON #{other_table}.id = #{join_table}.#{other_join_column} WHERE #{join_table}.#{join_column} = #{id}"
   end
 
   def self.get_table_columns_sql( table_name )

@@ -6,8 +6,18 @@ require_relative('models/model_generator/model_generator')
 require('pry-byebug')
 
 # CUSTOMERS
+Ticket.delete_all()
 Customer.delete_all()
 Film.delete_all()
+
+Customer.add_many_to_many_join(
+  'films',
+  Film,
+  'customer_id',
+  'tickets',
+  'film_id',
+  'films'
+)
 
 customer_generator_settings = {
   first_name: {
@@ -39,8 +49,6 @@ customers = []
   customers.push(customer)
 end
 
-customers.first.first_name
-
 # FILMS
 
 film_generator_settings = {
@@ -70,6 +78,9 @@ end
 
 # TICKETS
 
+# make ticket gnerator!!!
+
+customers[0].films
 
 binding.pry
 nil
