@@ -34,7 +34,7 @@ class Model
 
   def save()
     id = QueryInterface.insert( table_name(), @data )
-    @id = id
+    @id = id.to_i
   end
 
   def update()
@@ -67,7 +67,7 @@ class Model
 
       if @data.keys().include?(column)
         if assign
-          response = set_column_value( column )
+          response = set_column_value( column, args[0] )
         else
           response = get_column_value( method_sym )
         end
@@ -92,7 +92,7 @@ class Model
   end
 
   def get_many_to_many( join_data )
-    
+
     data = QueryInterface.many_to_many(
       @id,
       join_data[:join_column],

@@ -23,6 +23,9 @@ class ModelGenerator
       when 'random_decimal'
         settings[:generator] = RandGenerator.new(:decimal, settings[:min], settings[:max], settings[:precision])
 
+      when 'random_integer'
+        settings[:generator] = RandGenerator.new(:integer, settings[:min], settings[:max])
+
       when 'array'
         settings[:generator] = settings[:data]
 
