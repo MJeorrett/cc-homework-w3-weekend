@@ -115,6 +115,3 @@ tickets = []
   ticket.save()
   tickets.push(ticket)
 end
-
-binding.pry
-nil
