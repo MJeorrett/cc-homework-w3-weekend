@@ -2,7 +2,7 @@ require('pry-byebug')
 
 class RandGenerator
 
-  def initialize( type, min, max, precision )
+  def initialize( type, min, max, precision=nil )
     @type = type
     @min = min
     @max = max
