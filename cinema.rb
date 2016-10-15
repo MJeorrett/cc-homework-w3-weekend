@@ -1,4 +1,4 @@
-require_relative('models/tickets')
+require_relative('models/ticket')
 
 class Cinema
 
