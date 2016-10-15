@@ -48,13 +48,17 @@ class Model
 # this method is overidden to dynamically create accessors for all columns and joins.
   def method_missing(method_sym, *args)
 
-    many_to_many_data = @@joins.find do |join|
-      correct_type = join[:type] == 'many_to_many'
-      name_matches = join[:name] == method_sym.to_s
+    join_data = @@joins.find do |join|
+      join[:name] == method_sym.to_s
     end
 
-    if many_to_many_data != nil
-      response = get_many_to_many( many_to_many_data )
+    if join_data != nil
+      case join_data[:type]
+      when :many_to_many
+        response = self.get_many_to_many( join_data )
+      when :one_to_many
+        response = self.get_one_to_many ( join_data )
+      end
     else
 
       if method_sym.to_s[-1] == '='
@@ -89,6 +93,15 @@ class Model
 
     @data[column] = args[0]
     return get_column_value( column )
+  end
+
+  def get_one_to_many( join_data )
+
+    conditions_hash = { join_data[:referencing_column] => @id }
+    
+    data = QueryInterface.all_where( join_data[:referencing_table], conditions_hash )
+
+    return join_data[:other_class].send( :data_to_objects, data )
   end
 
   def get_many_to_many( join_data )
@@ -130,21 +143,40 @@ class Model
     return self.data_to_objects( data ).first()
   end
 
+  def self.add_one_to_many_join( name, other_class, referencing_column, referencing_table )
+
+    join_data = {
+      name: name,
+      other_class: other_class,
+      type: :one_to_many,
+      referencing_column: referencing_column,
+      referencing_table: referencing_table
+    }
+
+    self.remove_join_with_name( name )
+    @@joins.push( join_data )
+  end
+
   def self.add_many_to_many_join( name, other_class, join_column, join_table, other_join_column, other_table )
 
     join_data = {
       name: name,
       other_class: other_class,
-      type: 'many_to_many',
+      type: :many_to_many,
       join_column: join_column,
       join_table: join_table,
       other_join_column: other_join_column,
       other_table: other_table
     }
 
-    current_join = @@joins.find { |join| join[:name] == name }
-    @@joins.delete(current_join) if current_join != nil
+    self.remove_join_with_name( name )
     @@joins.push( join_data )
+  end
+
+  def self.remove_join_with_name( name )
+
+    current_join = @@joins.find { |join| join[:name] == name }
+    @@joins.delete( current_join ) if current_join != nil
   end
 
   def self.table_name()

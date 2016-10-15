@@ -1,6 +1,7 @@
 require_relative('models/customer')
 require_relative('models/film')
 require_relative('models/ticket')
+require_relative('cinema')
 
 require('pry-byebug')
 
@@ -14,6 +15,13 @@ Customer.add_many_to_many_join(
   'films'
 )
 
+Customer.add_one_to_many_join(
+  'tickets',
+  Ticket,
+  'customer_id',
+  'tickets'
+)
+
 Film.add_many_to_many_join(
   'customers',
   Customer,
@@ -21,6 +29,13 @@ Film.add_many_to_many_join(
   'tickets',
   'customer_id',
   'customers'
+)
+
+Film.add_one_to_many_join(
+  'tickets',
+  Ticket,
+  'film_id',
+  'tickets'
 )
 
 # INITIALIZE OBJECTS
