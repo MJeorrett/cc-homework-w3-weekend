@@ -20,6 +20,15 @@ Customer.add_many_to_many_join(
   'films'
 )
 
+Film.add_many_to_many_join(
+  'customers',
+  Customer,
+  'film_id',
+  'tickets',
+  'customer_id',
+  'customers'
+)
+
 # GENERATE CUSTOMERS
 customer_generator_settings = {
   first_name: {
