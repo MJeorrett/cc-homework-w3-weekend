@@ -1,4 +1,5 @@
 require_relative('rand_generator')
+require_relative('constant_generator')
 
 class ModelGenerator
 
@@ -28,6 +29,9 @@ class ModelGenerator
 
       when 'array'
         settings[:generator] = settings[:data]
+
+      when 'constant'
+        settings[:generator] = ConstantGenerator.new( settings[:value] )
 
       else
         raise(TypeError, "Un-supported source '#{type}'")

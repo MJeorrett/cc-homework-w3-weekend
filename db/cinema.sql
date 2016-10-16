@@ -25,7 +25,8 @@ CREATE TABLE films (
 CREATE TABLE tickets (
   id SERIAL4 primary key,
   customer_id INT4 REFERENCES customers(id),
-  film_id INT4 REFERENCES films(id)
+  film_id INT4 REFERENCES films(id),
+  used BOOLEAN
 );
 
 -- CREATE VIEWS
@@ -45,7 +46,8 @@ ORDER BY title ASC;
 CREATE VIEW tickets_vw AS SELECT
   t.id,
   customers_vw.full_name customer,
-  f.title film
+  f.title film,
+  t.used
 FROM tickets t
   INNER JOIN customers_vw ON customers_vw.id = t.customer_id
   INNER JOIN films f ON f.id = t.film_id

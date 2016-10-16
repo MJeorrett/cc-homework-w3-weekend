@@ -11,6 +11,16 @@ class Model
     'decimal' => :to_f
   }
 
+  SQL_TRUE_VALUES = [
+    'TRUE',
+    't',
+    'true',
+    'y',
+    'yes',
+    'on',
+    '1'
+  ]
+
   attr_reader :id
 
   @@joins = []
@@ -44,13 +54,27 @@ class Model
   end
 
   def cast_data()
-    for column_name, value in @data
-      sql_data_type = self.class.sql_data_type_for_column( column_name )
-      casting_function = DATA_CASTING_FUNCTIONS[sql_data_type]
-      if casting_function != nil
-        @data[column_name] = @data[column_name].send( casting_function )
+    for column, value in @data
+      sql_data_type = self.class.sql_data_type_for_column( column )
+
+      if sql_data_type == 'boolean'
+
+        if SQL_TRUE_VALUES.include?(@data[column])
+          @data[column] = true
+        else
+          @data[column] = false
+        end
+
       else
-        raise( TypeError, "Un-supported sql data type '#{sql_data_type}'.")
+
+        casting_function = DATA_CASTING_FUNCTIONS[sql_data_type]
+
+        if casting_function != nil
+          @data[column] = @data[column].send( casting_function )
+        else
+          raise( TypeError, "Un-supported sql data type '#{sql_data_type}'.")
+        end
+
       end
     end
   end

@@ -103,6 +103,10 @@ class QueryBuilder
       sql = "#{value}"
     when 'String'
       sql = "'#{value.gsub("'", "''")}'"
+    when 'TrueClass'
+      sql = true
+    when 'FalseClass'
+      sql = false
     else
       raise(TypeError, "Un-supported data type class: #{value_class}.")
     end

@@ -86,6 +86,10 @@ ticket_generator_settings = {
     type: 'random_integer',
     min: min_film_id,
     max: max_film_id
+  },
+  used: {
+    type: 'constant',
+    value: 'true'
   }
 }
 
