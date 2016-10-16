@@ -43,8 +43,12 @@ CREATE VIEW customers_vw AS SELECT
 FROM customers c
 ORDER BY full_name ASC;
 
-CREATE VIEW films_vw AS SELECT *
-FROM films
+CREATE VIEW films_vw AS SELECT
+  f.id,
+  f.title,
+  f.price,
+  (SELECT COUNT(*) FROM tickets t WHERE f.id = t.film_id) number_of_tickets
+FROM films f
 ORDER BY title ASC;
 
 CREATE VIEW tickets_vw AS SELECT
