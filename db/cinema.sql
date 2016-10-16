@@ -1,4 +1,4 @@
--- Run file
+-- Run file from command line:
 -- psql -d cinema -f db/cinema.sql
 
 -- DROP VIEWS
