@@ -46,7 +46,7 @@ class ModelGenerator
       end
 
       value = settings[:generator].shift()
-      parameters[parameter] = value
+      parameters[parameter.to_s] = value
 
       if settings[:duplicates]
         settings[:generator].push(value)

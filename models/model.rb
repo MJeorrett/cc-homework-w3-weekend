@@ -47,7 +47,7 @@ class Model
 
 # this method is overidden to dynamically create accessors for all columns and joins.
   def method_missing(method_sym, *args)
-
+    
     join_data = @@joins.find do |join|
       join[:name] == method_sym.to_s
     end
@@ -62,10 +62,10 @@ class Model
     else
 
       if method_sym.to_s[-1] == '='
-        column = method_sym[0..-2].to_sym
+        column = method_sym[0..-2].to_s
         assign = true
       else
-        column = method_sym
+        column = method_sym.to_s
         assign = false
       end
 
@@ -73,9 +73,10 @@ class Model
         if assign
           response = set_column_value( column, args[0] )
         else
-          response = get_column_value( method_sym )
+          response = get_column_value( column )
         end
       else
+        # must call super if method is not dealt with else usual method_missing behaviour is followed
         super
       end
 
@@ -98,7 +99,7 @@ class Model
   def get_one_to_many( join_data )
 
     conditions_hash = { join_data[:referencing_column] => @id }
-    
+
     data = QueryInterface.all_where( join_data[:referencing_table], conditions_hash )
 
     return join_data[:other_class].send( :data_to_objects, data )
