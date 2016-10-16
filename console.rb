@@ -43,5 +43,7 @@ customers = Customer.all()
 films = Film.all()
 tickets = Ticket.all()
 
+customers[0].funds
+
 binding.pry
 nil

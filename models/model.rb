@@ -4,6 +4,13 @@ require('pry-byebug')
 
 class Model
 
+  DATA_CASTING_FUNCTIONS = {
+    'integer' => :to_i,
+    'character varying' => :to_s,
+    'numeric' => :to_f,
+    'decimal' => :to_f
+  }
+
   attr_reader :id
 
   @@joins = []
@@ -15,39 +22,55 @@ class Model
     self.check_data_matches_columns()
 
     if data['id'] != nil
-      @id = data['id']
+      @id = data['id'].to_i
       data.delete('id')
     end
+
+    self.cast_data()
+
   end
 
   def check_data_matches_columns()
-    query_result = QueryInterface.get_table_columns( table_name() )
-    column_names = query_result.map { |result| result['column_name'] }
+
+    query_results = QueryInterface.get_table_columns( self.class::TABLE_NAME )
+    column_names = query_results.map { |result| result['column_name'] }
 
     @data.each_key do |key|
       if !column_names.include?(key.to_s)
-        raise(TypeError, "Error in sub-class: #{self.class()}: Key '#{key}' not a column in table '#{self.table_name()}'.")
+        raise(TypeError, "Error in sub-class: #{self.class()}: Key '#{key}' not a column in table '#{self.class::TABLE_NAME}'.")
       end
     end
 
   end
 
+  def cast_data()
+    for column_name, value in @data
+      sql_data_type = self.class.sql_data_type_for_column( column_name )
+      casting_function = DATA_CASTING_FUNCTIONS[sql_data_type]
+      if casting_function != nil
+        @data[column_name] = @data[column_name].send( casting_function )
+      else
+        raise( TypeError, "Un-supported sql data type '#{sql_data_type}'.")
+      end
+    end
+  end
+
   def save()
-    id = QueryInterface.insert( table_name(), @data )
+    id = QueryInterface.insert( self.class::TABLE_NAME, @data )
     @id = id.to_i
   end
 
   def update()
-    QueryInterface.update( table_name(), @data, @id )
+    QueryInterface.update( self.class::TABLE_NAME, @data, @id )
   end
 
   def delete()
-    QueryInterface.delete_with_id( table_name(), @id )
+    QueryInterface.delete_with_id( self.class::TABLE_NAME, @id )
   end
 
 # this method is overidden to dynamically create accessors for all columns and joins.
   def method_missing(method_sym, *args)
-    
+
     join_data = @@joins.find do |join|
       join[:name] == method_sym.to_s
     end
@@ -70,6 +93,7 @@ class Model
       end
 
       if @data.keys().include?(column)
+
         if assign
           response = set_column_value( column, args[0] )
         else
@@ -118,22 +142,18 @@ class Model
     return join_data[:other_class].send( :data_to_objects, data )
   end
 
-  def table_name()
-    return self.class().table_name()
-  end
-
   def self.all()
-    data = QueryInterface.all_records( table_name() )
+    data = QueryInterface.all_records( self::TABLE_NAME )
     return self.data_to_objects( data )
   end
 
   def self.find_by_id( id )
-    data = QueryInterface.find_by_id( self.table_name(), id )
+    data = QueryInterface.find_by_id( self::TABLE_NAME, id )
     return self.data_to_obejct( data )
   end
 
   def self.delete_all()
-    QueryInterface.delete_all( self.table_name() )
+    QueryInterface.delete_all( self::TABLE_NAME )
   end
 
   def self.data_to_objects( data )
@@ -180,8 +200,41 @@ class Model
     @@joins.delete( current_join ) if current_join != nil
   end
 
-  def self.table_name()
-    raise "Error in sub-class #{self.class}:  'self.table_name' must be implemented in sub-classes of Model."
+  def self.sql_data_type_for_column( column_name )
+
+    my_class = self.to_s
+
+    @@columns_data = {} if !defined?(@@columns_data)
+
+    if !@@columns_data.has_key?( my_class )
+      self.initialize_column_data()
+    end
+
+    column_data = @@columns_data[my_class].find do |column_data|
+      column_data[:name] == column_name
+    end
+
+    if column_data == nil
+      raise("Error in #{self}: no data found for column ''#{column_name}'.")
+    else
+      return column_data[:data_type]
+    end
+
+  end
+
+  def self.initialize_column_data()
+
+    my_class = self.to_s
+    query_results = QueryInterface.get_table_columns( self::TABLE_NAME )
+
+
+    @@columns_data[my_class] = query_results.map do |result|
+      {
+        name: result['column_name'],
+        data_type: result['data_type']
+      }
+    end
+
   end
 
 end
