@@ -33,7 +33,8 @@ CREATE VIEW customers_vw AS SELECT
   id,
   concat(first_name, ' ', last_name) full_name,
   first_name,
-  last_name
+  last_name,
+  funds
 FROM customers
 ORDER BY full_name ASC;
 

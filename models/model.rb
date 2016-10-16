@@ -116,7 +116,7 @@ class Model
 
   def set_column_value( column, new_value )
 
-    @data[column] = args[0]
+    @data[column] = new_value
     return get_column_value( column )
   end
 
@@ -210,13 +210,16 @@ class Model
       self.initialize_column_data()
     end
 
-    column_data = @@columns_data[my_class].find do |column_data|
-      column_data[:name] == column_name
+    my_columns_data = @@columns_data[my_class]
+    column_data = my_columns_data.find do |a_column_data|
+      a_column_data[:name] == column_name
     end
 
     if column_data == nil
-      raise("Error in #{self}: no data found for column ''#{column_name}'.")
+
+      raise("Error in #{self}: no data found for column '#{column_name}'.")
     else
+
       return column_data[:data_type]
     end
 

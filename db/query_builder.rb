@@ -30,7 +30,7 @@ class QueryBuilder
   end
 
   def self.insert_sql( table_name, values_hash )
-    sql_arrays = self.get_columns_and_values_sql( values_hash )
+    sql_arrays = self.get_columns_and_values( values_hash )
 
     columns_sql = sql_arrays[:columns_array].join(", ")
     values_sql = sql_arrays[:values_array].join(", ")
@@ -39,7 +39,7 @@ class QueryBuilder
   end
 
   def self.update_sql( table_name, values_hash, id)
-    sql_arrays = self.get_columns_and_values_sql( values_hash )
+    sql_arrays = self.get_columns_and_values( values_hash )
     columns_array = sql_arrays[:columns_array]
     values_array = sql_arrays[:values_array]
 
