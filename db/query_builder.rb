@@ -78,7 +78,7 @@ class QueryBuilder
     return "#{select_statement} #{where_clause}"
   end
 
-  def self.get_columns_and_values_sql( values_hash )
+  def self.get_columns_and_values( values_hash )
     columns_array = []
     values_array = []
 
