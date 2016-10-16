@@ -88,8 +88,7 @@ ticket_generator_settings = {
     max: max_film_id
   },
   used: {
-    type: 'constant',
-    value: 'true'
+    type: 'random_boolean'
   }
 }
 

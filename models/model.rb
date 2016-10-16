@@ -12,6 +12,7 @@ class Model
   }
 
   SQL_TRUE_VALUES = [
+    true,
     'TRUE',
     't',
     'true',
@@ -80,6 +81,7 @@ class Model
   end
 
   def save()
+    
     id = QueryInterface.insert( self.class::TABLE_NAME, @data )
     @id = id.to_i
   end

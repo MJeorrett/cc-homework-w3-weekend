@@ -1,5 +1,6 @@
-require_relative('rand_generator')
+require_relative('number_generator')
 require_relative('constant_generator')
+require_relative('boolean_generator')
 
 class ModelGenerator
 
@@ -22,16 +23,19 @@ class ModelGenerator
         settings[:generator] = data_array
 
       when 'random_decimal'
-        settings[:generator] = RandGenerator.new(:decimal, settings[:min], settings[:max], settings[:precision])
+        settings[:generator] = NumberGenerator.new(:decimal, settings[:min], settings[:max], settings[:precision])
 
       when 'random_integer'
-        settings[:generator] = RandGenerator.new(:integer, settings[:min], settings[:max])
+        settings[:generator] = NumberGenerator.new(:integer, settings[:min], settings[:max])
 
       when 'array'
         settings[:generator] = settings[:data]
 
       when 'constant'
         settings[:generator] = ConstantGenerator.new( settings[:value] )
+
+      when 'random_boolean'
+        settings[:generator] = BooleanGenerator.new()
 
       else
         raise(TypeError, "Un-supported source '#{type}'")

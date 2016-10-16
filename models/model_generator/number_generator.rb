@@ -1,6 +1,6 @@
 require('pry-byebug')
 
-class RandGenerator
+class NumberGenerator
 
   def initialize( type, min, max, precision=nil )
     @type = type

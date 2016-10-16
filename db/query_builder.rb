@@ -30,6 +30,7 @@ class QueryBuilder
   end
 
   def self.insert_sql( table_name, values_hash )
+    
     sql_arrays = self.get_columns_and_values( values_hash )
 
     columns_sql = sql_arrays[:columns_array].join(", ")
@@ -104,9 +105,9 @@ class QueryBuilder
     when 'String'
       sql = "'#{value.gsub("'", "''")}'"
     when 'TrueClass'
-      sql = true
+      sql = "TRUE"
     when 'FalseClass'
-      sql = false
+      sql = "FALSE"
     else
       raise(TypeError, "Un-supported data type class: #{value_class}.")
     end
