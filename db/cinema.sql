@@ -1,3 +1,6 @@
+-- Run file
+-- psql -d cinema -f db/cinema.sql
+
 -- DROP VIEWS
 DROP VIEW IF EXISTS tickets_vw;
 DROP VIEW IF EXISTS customers_vw;
@@ -35,8 +38,9 @@ CREATE VIEW customers_vw AS SELECT
   concat(first_name, ' ', last_name) full_name,
   first_name,
   last_name,
-  funds
-FROM customers
+  funds,
+  (SELECT COUNT(*) FROM tickets t WHERE c.id = t.customer_id) number_of_tickets
+FROM customers c
 ORDER BY full_name ASC;
 
 CREATE VIEW films_vw AS SELECT *
