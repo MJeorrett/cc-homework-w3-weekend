@@ -25,7 +25,7 @@ class Cinema
       raise "Error: customer can't afford snack!"
     else
       customer_snack_data = {
-        'customer_id' => customer.id
+        'customer_id' => customer.id,
         'snack_id' => snack.id
       }
 
