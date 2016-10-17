@@ -67,4 +67,27 @@ class ModelGenerator
   def self.array_from_file( path )
     return File.read(path).lines.map { |line| line.strip }
   end
+
+  def self.models_from_keys_and_values( object_class, keys, values )
+
+    max_values_index = values.length - 1
+    objects = []
+
+    for values_set_index in (0..max_values_index)
+
+      values_set = values[values_set_index]
+      data = {}
+
+      keys.each_with_index do |key, index|
+        data[key] = values_set[index]
+      end
+
+      new_object = object_class.new( data )
+      new_object.save()
+      objects.push( new_object )
+    end
+
+    return objects
+  end
+
 end

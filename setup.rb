@@ -70,7 +70,7 @@ films = []
 end
 
 # GENERATE SNACKs
-snacks_data = [
+snacks_values = [
   ['Mars Bar', 0.99],
   ['Yorkie', 0.99],
   ['Crisps', 1.10],
@@ -78,14 +78,14 @@ snacks_data = [
   ['Popcorn', 3.50],
   ['Hotdog', 5.00],
 ]
-
-snacks = []
-
-snacks_data.each do |snack_data|
-  snack = Snack.new( 'name' => snack_data[0], 'price' => snack_data[1] )
-  snack.save
-  snacks.push( snack )
-end
+snacks_keys = [
+  'name',
+  'price'
+]
+snacks = ModelGenerator.models_from_keys_and_values(
+  Snack,
+  snacks_keys,
+  snacks_values )
 
 # GENERATE TICKETS
 customer_ids = customers.map { |customer| customer.id }
