@@ -81,7 +81,7 @@ class Model
   end
 
   def save()
-    
+
     id = QueryInterface.insert( self.class::TABLE_NAME, @data )
     @id = id.to_i
   end
@@ -175,7 +175,7 @@ class Model
 
   def self.find_by_id( id )
     data = QueryInterface.find_by_id( self::TABLE_NAME, id )
-    return self.data_to_obejct( data )
+    return self.data_to_object( data )
   end
 
   def self.delete_all()
@@ -186,7 +186,7 @@ class Model
     return data.map { |record| self.new( record ) }
   end
 
-  def self.data_to_obejct( data )
+  def self.data_to_object( data )
     return self.data_to_objects( data ).first()
   end
 

@@ -5,10 +5,6 @@ class Customer < Model
 
   TABLE_NAME = 'customers'
 
-  def initialize( data )
-    super( data )
-  end
-
   def number_of_tickets()
     conditions = { id: @id }
     result = QueryInterface.all_where( 'customers_vw', conditions )

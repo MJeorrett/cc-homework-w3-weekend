@@ -4,10 +4,6 @@ class Film < Model
 
   TABLE_NAME = 'films'
 
-  def initialize( data )
-    super( data )
-  end
-
   def number_of_tickets()
     conditions = { id: @id }
     result = QueryInterface.all_where( 'films_vw', conditions )

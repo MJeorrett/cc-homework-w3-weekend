@@ -1,11 +1,14 @@
 require_relative('models/customer')
 require_relative('models/film')
+require_relative('models/snack')
 require_relative('models/ticket')
+require_relative('models/customer_snack')
 require_relative('models/model_generator/model_generator')
 
 require('pry-byebug')
 
 # DELETE EXISTING RECORDS
+CustomerSnack.delete_all()
 Ticket.delete_all()
 Customer.delete_all()
 Film.delete_all()
@@ -66,26 +69,40 @@ films = []
   films.push(film)
 end
 
+# GENERATE SNACKs
+snacks_data = [
+  ['Mars Bar', 0.99],
+  ['Yorkie', 0.99],
+  ['Crisps', 1.10],
+  ['Coke', 2.10],
+  ['Popcorn', 3.50],
+  ['Hotdog', 5.00],
+]
+
+snacks = []
+
+snacks_data.each do |snack_data|
+  snack = Snack.new( 'name' => snack_data[0], 'price' => snack_data[1] )
+  snack.save
+  snacks.push( snack )
+end
 
 # GENERATE TICKETS
 customer_ids = customers.map { |customer| customer.id }
-min_customer_id = customer_ids.min()
-max_customer_id = customer_ids.max()
-
 film_ids = films.map { |film| film.id }
-min_film_id = film_ids.min()
-max_film_id = film_ids.max()
 
 ticket_generator_settings = {
   customer_id: {
-    type: 'random_integer',
-    min: min_customer_id,
-    max: max_customer_id
+      type: 'array',
+      data: customer_ids,
+      randomise: true,
+      duplicates: true
   },
   film_id: {
-    type: 'random_integer',
-    min: min_film_id,
-    max: max_film_id
+    type: 'array',
+    data: film_ids,
+    randomise: true,
+    duplicates: true
   },
   used: {
     type: 'random_boolean'
@@ -98,4 +115,30 @@ tickets = []
   ticket = ticket_generator.generate_model()
   ticket.save()
   tickets.push(ticket)
+end
+
+# GENERATE CUSTOMER SNACKS
+snack_ids = snacks.map { |snack| snack.id }
+
+customer_snack_generator_settings = {
+  customer_id: {
+      type: 'array',
+      data: customer_ids,
+      randomise: true,
+      duplicates: true
+  },
+  snack_id: {
+    type: 'array',
+    data: snack_ids,
+    randomise: true,
+    duplicates: true
+  }
+}
+
+customer_snack_generator = ModelGenerator.new( CustomerSnack, customer_snack_generator_settings )
+customers_snacks = []
+30.times do
+  customer_snack = customer_snack_generator.generate_model()
+  customer_snack.save()
+  customers_snacks.push( customer_snack )
 end
